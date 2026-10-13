@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Thi Trắc Nghiệm Hóa Học Vô Cơ</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --danger: #dc2626;
+            --danger-bg: #fee2e2;
+            --warning: #d97706;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: var(--card);
+            color: var(--primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .view-panel {
+            display: none;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        .controls-card {
+            background: var(--card);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        select, button.btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select {
+            border: 1px solid var(--border);
+            background-color: var(--card);
+            color: var(--text);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .question-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .q-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-chapter { background: #e0f2fe; color: #0369a1; }
+        .badge-level { background: #f3e8ff; color: #6b21a8; }
+
+        .q-content {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            color: #1e293b;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-item {
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--card);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .option-item:hover:not(.disabled) {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background-color: #dbeafe;
+            font-weight: 600;
+        }
+
+        .option-item.correct {
+            border-color: var(--success) !important;
+            background-color: var(--success-bg) !important;
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .option-item.wrong {
+            border-color: var(--danger) !important;
+            background-color: var(--danger-bg) !important;
+            color: #7f1d1d;
+        }
+
+        .explain-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f0fdf4;
+            border-left: 4px solid var(--success);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #166534;
+            display: none;
+        }
+
+        .explain-box.show {
+            display: block;
+        }
+
+        .explain-box.wrong-explain {
+            background: #fef2f2;
+            border-left-color: var(--danger);
+            color: #991b1b;
+        }
+
+        .q-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Exam Mode Specifics */
+        .exam-status-bar {
+            position: sticky;
+            top: 75px;
+            z-index: 90;
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .timer-display {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #facc15;
+            font-family: monospace;
+        }
+
+        .exam-nav-card {
+            background: var(--card);
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .exam-grid-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .nav-square {
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .nav-square.answered {
+            background: #dbeafe;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .result-summary {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .score-big {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 640px) {
+            .nav-container { flex-direction: column; align-items: stretch; }
+            .tab-buttons { width: 100%; }
+            .tab-btn { flex: 1; text-align: center; }
+            .controls-card { flex-direction: column; align-items: stretch; }
+            .exam-status-bar { flex-direction: column; gap: 0.5rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                🧪 <span>Hóa Học Vô Cơ - Ôn Thi</span>
+            </div>
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchMode('practice')">Ôn Tập Theo Chương</button>
+                <button class="tab-btn" onclick="switchMode('exam')">Thi Thử Đề 40 Câu</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- CHẾ ĐỘ 1: ÔN TẬP THEO CHƯƠNG -->
+        <section id="view-practice" class="view-panel active">
+            <div class="controls-card">
+                <div>
+                    <label for="chapter-select" style="font-weight: 600; margin-right: 8px;">Chọn Chương:</label>
+                    <select id="chapter-select" onchange="filterPracticeChapter()">
+                        <option value="0">Tất cả các chương (Chương 1 - 5)</option>
+                        <option value="1">Chương 1: Phản ứng Oxi hóa - Khử & Cấu tạo</option>
+                        <option value="2">Chương 2: Kim loại Kiềm, Kiềm thổ, Nhôm</option>
+                        <option value="3">Chương 3: Sắt & Một số kim loại quan trọng</option>
+                        <option value="4">Chương 4: Phi kim & Dung dịch</option>
+                        <option value="5">Chương 5: Tổng hợp Hóa học vô cơ</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="resetPracticeAll()">🔄 Làm lại tất cả</button>
+            </div>
+
+            <div id="practice-questions-container"></div>
+        </section>
+
+        <!-- CHẾ ĐỘ 2: THI THỬ 40 CÂU -->
+        <section id="view-exam" class="view-panel">
+            <!-- Màn hình chuẩn bị thi -->
+            <div id="exam-start-card" class="result-summary">
+                <h2>Đề Thi Thử Trắc Nghiệm Hóa Học Vô Cơ</h2>
+                <p style="color: var(--text-muted); margin: 1rem 0;">Cấu trúc đề gồm 40 câu hỏi tổng hợp ngẫu nhiên. Thời gian làm bài 50 phút.</p>
+                <button class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 28px;" onclick="startExam()">🚀 Bắt Đầu Làm Bài</button>
+            </div>
+
+            <!-- Màn hình đang làm bài -->
+            <div id="exam-active-area" style="display: none;">
+                <div class="exam-status-bar">
+                    <div>
+                        <span>Đã làm: </span>
+                        <strong id="exam-progress-text">0/40</strong>
+                    </div>
+                    <div class="timer-display" id="timer-text">50:00</div>
+                    <button class="btn btn-primary" style="background: #16a34a;" onclick="submitExamPrompt()">📥 Nộp Bài</button>
+                </div>
+
+                <div class="exam-nav-card">
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px;">Bảng câu hỏi:</div>
+                    <div class="exam-grid-nav" id="exam-grid-nav"></div>
+                </div>
+
+                <div id="exam-questions-container"></div>
+            </div>
+
+            <!-- Màn hình kết quả -->
+            <div id="exam-result-area" style="display: none;">
+                <div class="result-summary">
+                    <h2>Kết Quả Bài Thi</h2>
+                    <div class="score-big" id="result-score">0.0 / 10</div>
+                    <p id="result-detail" style="color: var(--text-muted); font-size: 1.05rem;"></p>
+                    <button class="btn btn-primary" style="margin-top: 1.5rem;" onclick="startExam()">🔄 Làm Đề Khác</button>
+                </div>
+                <h3 style="margin-bottom: 1rem;">Chi tiết đáp án & Lời giải:</h3>
+                <div id="exam-review-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- DỮ LIỆU CÂU HỎI MẪU (BÀI TẬP HÓA VÔ CƠ) ---
+        const questionsData = [
+            {
+                id: 1,
+                chapter: 1,
+                question: "Trong phản ứng: 2Fe + 3Cl₂ → 2FeCl₃, vai trò của Fe là gì?",
+                options: ["A. Chất khử", "B. Chất oxi hóa", "C. Vừa là chất khử vừa là chất oxi hóa", "D. Môi trường"],
+                answer: "A",
+                level: "Nhận biết",
+                explain: "Số oxi hóa của Fe tăng từ 0 lên +3 trong FeCl₃, do đó Fe nhường electron và đóng vai trò là chất khử."
+            },
+            {
+                id: 2,
+                chapter: 1,
+                question: "Kim loại nào sau đây có tính dẫn điện tốt nhất trong tất cả các kim loại?",
+                options: ["A. Đồng (Cu)", "B. Nhôm (Al)", "C. Bạc (Ag)", "D. Vàng (Au)"],
+                answer: "C",
+                level: "Nhận biết",
+                explain: "Thứ tự khả năng dẫn điện giảm dần của các kim loại thường gặp: Ag > Cu > Au > Al > Fe."
+            },
+            {
+                id: 3,
+                chapter: 2,
+                question: "Cho từ từ dung dịch NaOH dư vào dung dịch AlCl₃. Hiện tượng quan sát được là:",
+                options: ["A. Xuất hiện kết tủa trắng không tan", "B. Xuất hiện kết tủa trắng, sau đó kết tủa tan hoàn toàn", "C. Có khí màu nâu đỏ thoát ra", "D. Không có hiện tượng gì"],
+                answer: "B",
+                level: "Thông hiểu",
+                explain: "Ban đầu tạo kết tủa Al(OH)₃: Al³⁺ + 3OH⁻ → Al(OH)₃↓. Do NaOH dư nên kết tủa lưỡng tính Al(OH)₃ tan hoàn toàn: Al(OH)₃ + OH⁻ → AlO₂⁻ + 2H₂O."
+            },
+            {
+                id: 4,
+                chapter: 2,
+                question: "Công thức hóa học của thạch cao nung là:",
+                options: ["A. CaSO₄.2H₂O", "B. CaSO₄.H₂O", "C. CaSO₄", "D. CaCO₃"],
+                answer: "B",
+                level: "Nhận biết",
+                explain: "Thạch cao sống là CaSO₄.2H₂O; thạch cao nung là CaSO₄.H₂O (hoặc CaSO₄.0,5H₂O); thạch cao khan là CaSO₄."
+            },
+            {
+                id: 5,
+                chapter: 3,
+                question: "Hợp chất nào sau đây của sắt vừa có tính oxi hóa vừa có tính khử?",
+                options: ["A. Fe₂O₃", "B. Fe(OH)₃", "C. FeO", "D. Fe₂(SO₄)₃"],
+                answer: "C",
+                level: "Thông hiểu",
+                explain: "Sắt trong FeO có số oxi hóa +2 (mức trung gian giữa 0 và +3), do đó FeO vừa có thể tăng lên +3 (tính khử) vừa có thể giảm về 0 (tính oxi hóa)."
+            },
+            {
+                id: 6,
+                chapter: 3,
+                question: "Hòa tan hoàn toàn 11,2g Fe vào dung dịch HNO₃ đặc nóng dư thu được dung dịch chứa muối Fe(NO₃)₃. Số mol HNO₃ đóng vai trò làm môi trường là:",
+                options: ["A. 0,2 mol", "B. 0,6 mol", "C. 0,8 mol", "D. 0,4 mol"],
+                answer: "B",
+                level: "Vận dụng",
+                explain: "Số mol Fe = 11,2 / 56 = 0,2 mol. Muối tạo thành là Fe(NO₃)₃. Số mol HNO₃ làm môi trường = số mol gốc NO₃⁻ trong muối = 3 * n(Fe) = 3 * 0,2 = 0,6 mol."
+            },
+            {
+                id: 7,
+                chapter: 4,
+                question: "Cặp khí nào sau đây là nguyên nhân chính gây ra hiện tượng mưa axit?",
+                options: ["A. CO₂ và CH₄", "B. SO₂ và NO₂", "C. N₂ và O₂", "D. NH₃ và HCl"],
+                answer: "B",
+                level: "Nhận biết",
+                explain: "Khí SO₂ và NO₂ trong khí thải công nghiệp bị oxi hóa và hòa tan trong nước mưa tạo thành axit H₂SO₄ và HNO₃ gây ra mưa axit."
+            },
+            {
+                id: 8,
+                chapter: 5,
+                question: "Bộ ba kim loại nào sau đây bị thụ động hóa trong dung dịch HNO₃ đặc, nguội và H₂SO₄ đặc, nguội?",
+                options: ["A. Fe, Al, Cr", "B. Cu, Ag, Au", "C. Fe, Cu, Al", "D. Zn, Mg, Fe"],
+                answer: "A",
+                level: "Nhận biết",
+                explain: "Fe, Al, Cr bị thụ động hóa trong dung dịch HNO₃ đặc nguội và H₂SO₄ đặc nguội do tạo ra màng oxit bền vững bảo vệ bề mặt kim loại."
+            }
+        ];
+
+        // --- TRẠNG THÁI ỨNG DỤNG ---
+        let currentMode = 'practice';
+        let practiceAnswers = {};
+
+        let examQuestions = [];
+        let examAnswers = {};
+        let timerInterval = null;
+        let timeRemaining = 50 * 60; // 50 phút
+
+        // --- CHUYỂN ĐỔI CHẾ ĐỘ ---
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', (mode === 'practice' && idx === 0) || (mode === 'exam' && idx === 1));
+            });
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(`view-${mode}`).classList.add('active');
+
+            if (mode === 'practice') {
+                renderPracticeView();
+            }
+        }
+
+        // --- CHẾ ĐỘ 1: ÔN TẬP THEO CHƯƠNG ---
+        function renderPracticeView() {
+            const selectedChapter = parseInt(document.getElementById('chapter-select').value);
+            const container = document.getElementById('practice-questions-container');
+            container.innerHTML = '';
+
+            const filtered = selectedChapter === 0
+                ? questionsData
+                : questionsData.filter(q => q.chapter === selectedChapter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="question-card" style="text-align:center;">Chưa có câu hỏi cho chương này.</div>`;
+                return;
+            }
+
+            filtered.forEach((q, index) => {
+                const userChoice = practiceAnswers[q.id];
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `practice-q-${q.id}`;
+
+                let optionsHTML = '';
+                q.options.forEach(opt => {
+                    const optLetter = opt.charAt(0);
+                    let optClass = 'option-item';
+
+                    if (userChoice) {
+                        optClass += ' disabled';
+                        if (optLetter === q.answer) {
+                            optClass += ' correct';
+                        } else if (optLetter === userChoice) {
+                            optClass += ' wrong';
+                        }
+                    }
+
+                    optionsHTML += `
+                        <div class="${optClass}" onclick="selectPracticeOption(${q.id}, '${optLetter}')">
+                            ${opt}
+                        </div>
+                    `;
+                });
+
+                let explainHTML = '';
+                if (userChoice) {
+                    const isCorrect = userChoice === q.answer;
+                    explainHTML = `
+                        <div class="explain-box show ${isCorrect ? '' : 'wrong-explain'}">
+                            <strong>${isCorrect ? '✅ Đúng rồi!' : '❌ Chưa chính xác! (Đáp án đúng: ' + q.answer + ')'}</strong><br>
+                            <em>Giải thích:</em> ${q.explain}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span class="q-title">Câu ${index + 1}</span>
+                        <div class="badges">
+                            <span class="badge badge-chapter">Chương ${q.chapter}</span>
+                            <span class="badge badge-level">${q.level}</span>
+                        </div>
+                    </div>
+                    <div class="q-content">${q.question}</div>
+                    <div class="options-grid">${optionsHTML}</div>
+                    ${explainHTML}
+                    <div class="q-actions">
+                        <button class="btn btn-secondary" style="font-size: 0.85rem;" onclick="resetPracticeQuestion(${q.id})">🔄 Làm lại câu này</button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function selectPracticeOption(questionId, letter) {
+            if (practiceAnswers[questionId]) return; // Đã trả lời rồi thì không đổi
+            practiceAnswers[questionId] = letter;
+            renderPracticeView();
+        }
+
+        function resetPracticeQuestion(questionId) {
+            delete practiceAnswers[questionId];
+            renderPracticeView();
+        }
+
+        function resetPracticeAll() {
+            practiceAnswers = {};
+            renderPracticeView();
+        }
+
+        function filterPracticeChapter() {
+            renderPracticeView();
+        }
+
+        // --- CHẾ ĐỘ 2: THI THỬ 40 CÂU ---
+        function startExam() {
+            examQuestions = [...questionsData].sort(() => 0.5 - Math.random());
+            if (examQuestions.length > 40) {
+                examQuestions = examQuestions.slice(0, 40);
+            }
+
+            examAnswers = {};
+            timeRemaining = 50 * 60;
+
+            document.getElementById('exam-start-card').style.display = 'none';
+            document.getElementById('exam-result-area').style.display = 'none';
+            document.getElementById('exam-active-area').style.display = 'block';
+
+            renderExamQuestions();
+            updateExamProgress();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert("⏰ Đã hết thời gian làm bài! Hệ thống sẽ tự động nộp bài.");
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer-text').innerText =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function renderExamQuestions() {
+            const container = document.getElementById('exam-questions-container');
+            const navContainer = document.getElementById('exam-grid-nav');
+            container.innerHTML = '';
+            navContainer.innerHTML = '';
+
+            examQuestions.forEach((q, idx) => {
+                // Render ô chuyển câu
+                const navSquare = document.createElement('div');
+                navSquare.className = `nav-square ${examAnswers[q.id] ? 'answered' : ''}`;
+                navSquare.id = `nav-sq-${q.id}`;
+                navSquare.innerText = idx + 1;
+                navSquare.onclick = () => {
+                    document.getElementById(`exam-q-${q.id}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                };
+                navContainer.appendChild(navSquare);
+
+                // Render câu hỏi
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `exam-q-${q.id}`;
+
+                let optionsHTML = '';
+                q.options.forEach(opt => {
+                    const optLetter = opt.charAt(0);
+                    const isSelected = examAnswers[q.id] === optLetter;
+                    optionsHTML += `
+                        <div class="option-item ${isSelected ? 'selected' : ''}" onclick="selectExamOption(${q.id}, '${optLetter}')">
+                            ${opt}
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span class="q-title">Câu ${idx + 1}</span>
+                        <div class="badges">
+                            <span class="badge badge-chapter">Chương ${q.chapter}</span>
+                            <span class="badge badge-level">${q.level}</span>
+                        </div>
+                    </div>
+                    <div class="q-content">${q.question}</div>
+                    <div class="options-grid">${optionsHTML}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectExamOption(questionId, letter) {
+            examAnswers[questionId] = letter;
+
+            // Cập nhật giao diện lựa chọn
+            const qCard = document.getElementById(`exam-q-${questionId}`);
+            const options = qCard.querySelectorAll('.option-item');
+            options.forEach(opt => {
+                if (opt.innerText.trim().startsWith(letter)) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+
+            // Cập nhật ô chuyển câu
+            const navSq = document.getElementById(`nav-sq-${questionId}`);
+            if (navSq) navSq.classList.add('answered');
+
+            updateExamProgress();
+        }
+
+        function updateExamProgress() {
+            const answeredCount = Object.keys(examAnswers).length;
+            document.getElementById('exam-progress-text').innerText = `${answeredCount}/${examQuestions.length}`;
+        }
+
+        function submitExamPrompt() {
+            const answeredCount = Object.keys(examAnswers).length;
+            const total = examQuestions.length;
+            if (answeredCount < total) {
+                if (!confirm(`Bạn mới làm ${answeredCount}/${total} câu. Bạn có chắc chắn muốn nộp bài sớm không?`)) {
+                    return;
+                }
+            } else {
+                if (!confirm("Bạn có chắc chắn muốn nộp bài không?")) return;
+            }
+            submitExam();
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            examQuestions.forEach(q => {
+                if (examAnswers[q.id] === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            const score = ((correctCount / examQuestions.length) * 10).toFixed(1);
+
+            document.getElementById('exam-active-area').style.display = 'none';
+            document.getElementById('exam-result-area').style.display = 'block';
+
+            document.getElementById('result-score').innerText = `${score} / 10 điểm`;
+            document.getElementById('result-detail').innerText =
+                `Bạn đã làm đúng ${correctCount}/${examQuestions.length} câu hỏi. Thời gian còn lại: ${document.getElementById('timer-text').innerText}`;
+
+            renderExamReview();
+        }
+
+        function renderExamReview() {
+            const container = document.getElementById('exam-review-container');
+            container.innerHTML = '';
+
+            examQuestions.forEach((q, idx) => {
+                const userChoice = examAnswers[q.id];
+                const isCorrect = userChoice === q.answer;
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+
+                let optionsHTML = '';
+                q.options.forEach(opt => {
+                    const optLetter = opt.charAt(0);
+                    let optClass = 'option-item disabled';
+
+                    if (optLetter === q.answer) {
+                        optClass += ' correct';
+                    } else if (optLetter === userChoice) {
+                        optClass += ' wrong';
+                    }
+
+                    optionsHTML += `<div class="${optClass}">${opt}</div>`;
+                });
+
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span class="q-title">Câu ${idx + 1}: ${isCorrect ? '✅ Đúng' : '❌ Sai'}</span>
+                        <div class="badges">
+                            <span class="badge badge-chapter">Chương ${q.chapter}</span>
+                            <span class="badge badge-level">${q.level}</span>
+                        </div>
+                    </div>
+                    <div class="q-content">${q.question}</div>
+                    <div class="options-grid">${optionsHTML}</div>
+                    <div class="explain-box show ${isCorrect ? '' : 'wrong-explain'}">
+                        <strong>Đáp án đúng: ${q.answer}</strong><br>
+                        <em>Giải thích chi tiết:</em> ${q.explain}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Khởi chạy chế độ mặc định khi vào trang
+        window.onload = function() {
+            renderPracticeView();
+        };
+    </script>
+</body>
+</html>
